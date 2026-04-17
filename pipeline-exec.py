@@ -1,3 +1,5 @@
+import fetchdata
+
 def run_ingestion():
     files = list_cur_files()
     
