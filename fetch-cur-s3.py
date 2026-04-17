@@ -2,7 +2,7 @@ import boto3
 
 s3 = boto3.client('s3')
 
-BUCKET = "your-cur-bucket"
+BUCKET = "cc-ai-sec-enf-287500922275-us-east-1-an"
 PREFIX = "cur/"
 
 def list_cur_files():
@@ -37,7 +37,7 @@ def filter_columns(df):
 #Insert data to DB
 from sqlalchemy import create_engine
 
-engine = create_engine("postgresql://user:password@localhost:5432/curdb")
+engine = create_engine("postgresql://postgres:SKS0987654321@aws-cc-ai.c452oegagckx.us-east-1.rds.amazonaws.com:5432/postgres")
 
 def save_to_db(df):
     df = df.rename(columns={

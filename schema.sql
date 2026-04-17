@@ -10,5 +10,4 @@ CREATE TABLE cur_data (
     usage_start TIMESTAMP
 );
 
-CREATE UNIQUE INDEX cur_unique_idx
-ON cur_data (resource_id, usage_start, usage_type);
+CREATE UNIQUE INDEX cur_unique_idx ON cur_data (resource_id, usage_start, usage_type);
