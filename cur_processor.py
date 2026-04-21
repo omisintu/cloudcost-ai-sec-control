@@ -74,9 +74,9 @@ def transform_dataframe(df):
     # Reorder by selecting columns in a specific list
     df = df[['account_id', 'resource_id', 'usage_type', 'operation', 'usage_amount', 'cost', 'product_name', 'region', 'usage_start_date']]
     
-    print("Sample data 4:",df.sample(50))
-    print("Columns B:", df.columns.tolist())
-    sys.exit("Execution Terminated.......") # Exits with status 1
+    #print("Sample data 4:",df.sample(50))
+    #print("Columns B:", df.columns.tolist())
+    #sys.exit("Execution Terminated.......") # Exits with status 1
 
     # Ensure required columns exist
     final_cols = [
@@ -96,4 +96,4 @@ def transform_dataframe(df):
     #        df[col] = None
     #print("Sample data 2:",df.sample(50))
     #df = df[final_cols]
-    return df.dropna(subset=["usage_start_date"])
+    return df
