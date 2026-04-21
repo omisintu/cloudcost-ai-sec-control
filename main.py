@@ -16,7 +16,7 @@ def process_file(key):
         logging.warning(f"Empty file: {key}")
         return
     
-    print(df.columns.tolist())
+    #print(df.columns.tolist())
     df = transform_dataframe(df)
     
     if df.empty:
