@@ -71,9 +71,12 @@ def transform_dataframe(df):
     # Format: {'old_name': 'new_name'}
     df = df.rename(columns={'line_item_usage_account_id': 'account_id', 'line_item_resource_id': 'resource_id', 'line_item_usage_type': 'usage_type', 'line_item_operation': 'operation', 'line_item_usage_amount': 'usage_amount', 'line_item_unblended_cost': 'cost', 'line_item_product_code': 'product_name', 'product_from_region_code': 'region', 'usage_start_date': 'usage_start_date'})
 
-    print("Sample data 4:",df.sample(100))
+    # Reorder by selecting columns in a specific list
+    df = df[['account_id', 'resource_id', 'usage_type', 'operation', 'usage_amount', 'cost', 'product_name', 'region', 'usage_start_date']]
+    
+    print("Sample data 4:",df.sample(50))
     print("Columns B:", df.columns.tolist())
-    sys.exit("Execution Terminated.......") # Exits with status 1
+    #sys.exit("Execution Terminated.......") # Exits with status 1
 
     # Ensure required columns exist
     final_cols = [
