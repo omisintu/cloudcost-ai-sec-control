@@ -55,6 +55,10 @@ def transform_dataframe(df):
         print("⚠️ No time column found, using current timestamp")
         df["usage_start_date"] = pd.Timestamp.now()
     
+    print("Sample data 4:",df.sample(250))
+    print("Columns B:", df.columns.tolist())
+    sys.exit("Execution Terminated.......") # Exits with status 1
+    
     # Convert types safely
     #df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
 
@@ -81,7 +85,4 @@ def transform_dataframe(df):
             df[col] = None
     print("Sample data 2:",df.sample(50))
     df = df[final_cols]
-    print("Sample data 3:",df.sample(50))
-    print("Columns B:", df.columns.tolist())
-    sys.exit("Execution Terminated.......") # Exits with status 1
     return df.dropna(subset=["usage_start_date"])
