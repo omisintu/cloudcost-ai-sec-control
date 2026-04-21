@@ -15,10 +15,10 @@ def process_file(key):
     if df.empty:
         logging.warning(f"Empty file: {key}")
         return
-    print(df.columns.tolist())
+    
     
     df = transform_dataframe(df)
-
+    print(df.columns.tolist())
     if df.empty:
         logging.warning(f"No valid data after transform: {key}")
         return
