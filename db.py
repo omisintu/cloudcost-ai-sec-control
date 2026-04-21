@@ -9,7 +9,7 @@ def insert_batch(df, table="cur_data"):
     if "usage_start_date" not in df.columns:
         raise Exception("usage_start_date missing before DB insert")
     
-    df.to_csv('data.csv', index=False)
+    #df.to_csv('data.csv', index=False)# DEBUG: Save to CSV before insert to inspect data
     
     try:
         df.to_sql(

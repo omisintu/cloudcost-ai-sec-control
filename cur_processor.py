@@ -1,18 +1,6 @@
 import pandas as pd
 import io
-
-REQUIRED_COLUMNS = [
-    "lineItem/AccountId",
-    "lineItem/ResourceId",
-    "lineItem/UsageType",
-    "lineItem/Operation",
-    "lineItem/UsageAmount",
-    "lineItem/UnblendedCost",
-    "product/ProductName",
-    "product/region",
-    "lineItem/UsageStartDate"
-]
-
+ 
 
 def load_dataframe(s3_obj, key):
     body = s3_obj["Body"].read()
@@ -32,7 +20,8 @@ def transform_dataframe(df):
 
     # DEBUG (keep this for now)
     #print("Columns:", df.columns.tolist())
-
+    print("Sample data 1:",df.sample(50))
+    
     # Rename known fields
     rename_map = {
         "lineItem/UsageAccountId": "account_id",
@@ -41,8 +30,8 @@ def transform_dataframe(df):
         "lineItem/Operation": "operation",
         "lineItem/UsageAmount": "usage_amount",
         "lineItem/UnblendedCost": "cost",
-        "product/ProductName": "product_name",
-        "product/region": "region"
+        "lineItem/ProductCode": "product_name",
+        "productFrom/RegionCode": "region"
     }
 
     df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
@@ -52,7 +41,7 @@ def transform_dataframe(df):
         df["usage_start_date"] = df["lineItem/UsageStartDate"]
 
     elif "lineItem/UsageStartDateTime" in df.columns:
-        df["usage_start_date"] = df["lineItem/UsageStartDateTime"]
+        df["usage_start_date"] = df["lineItem/UsageEndDate"]
 
     elif "identity/TimeInterval" in df.columns:
         df["usage_start_date"] = df["identity/TimeInterval"].astype(str).str.split("/").str[0]
@@ -65,14 +54,14 @@ def transform_dataframe(df):
         # 🔥 LAST fallback (prevent crash)
         print("⚠️ No time column found, using current timestamp")
         df["usage_start_date"] = pd.Timestamp.now()
-
+    print("Sample data 2:",df.sample(50))
     # Convert types safely
-    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
+    #df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
 
-    if "cost" in df.columns:
-        df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
-    else:
-        df["cost"] = 0
+    #if "cost" in df.columns:
+    #    df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
+    #else:
+    #    df["cost"] = 0
 
     # Ensure required columns exist
     final_cols = [
@@ -92,25 +81,5 @@ def transform_dataframe(df):
             df[col] = None
 
     df = df[final_cols]
-
+    print("Sample data 3:",df.sample(50))
     return df.dropna(subset=["usage_start_date"])
-#def transform_dataframe(df):
-#    cols = [c for c in REQUIRED_COLUMNS if c in df.columns]
-#    df = df[cols].copy()
-
-#    df = df.rename(columns={
-#        "lineItem/AccountId": "account_id",
-#        "lineItem/ResourceId": "resource_id",
-#        "lineItem/UsageType": "usage_type",
-#        "lineItem/Operation": "operation",
-#        "lineItem/UsageAmount": "usage_amount",
-#        "lineItem/UnblendedCost": "cost",
-#        "product/ProductName": "product_name",
-#        "product/region": "region",
-#        "lineItem/UsageStartDate": "usage_start_date"
-#    })
-
-#    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
-#    df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
-
-#    return df.dropna(subset=["usage_start_date"])
