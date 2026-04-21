@@ -10,7 +10,7 @@ REQUIRED_COLUMNS = [
     "lineItem/UnblendedCost",
     "product/ProductName",
     "product/region",
-    "lineItem/usage_start"
+    "lineItem/UsageStartDate"
 ]
 
 
@@ -38,10 +38,10 @@ def transform_dataframe(df):
         "lineItem/UnblendedCost": "cost",
         "product/ProductName": "product_name",
         "product/region": "region",
-        "lineItem/usage_start": "usage_start"
+        "lineItem/UsageStartDate": "usage_start_date"
     })
 
-    df["usage_start"] = pd.to_datetime(df["usage_start"], errors="coerce")
+    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
     df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
 
-    return df.dropna(subset=["usage_start"])
+    return df.dropna(subset=["usage_start_date"])

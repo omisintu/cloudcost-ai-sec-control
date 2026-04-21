@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS cur_data (
     cost FLOAT,
     product_name TEXT,
     region TEXT,
-    usage_start TIMESTAMP
+    usage_start_date TIMESTAMP
 );
 CREATE TABLE processed_files (
     file_key TEXT PRIMARY KEY,
     processed_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX cur_unique_idx ON cur_data (resource_id, usage_start, usage_type);
+CREATE UNIQUE INDEX cur_unique_idx ON cur_data (resource_id, usage_start_date, usage_type);
