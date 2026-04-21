@@ -33,45 +33,46 @@ def transform_dataframe(df):
         "lineItem/ProductCode": "product_name",
         "productFrom/RegionCode": "region"
     }
-
-    # Drop everything that is NOT in your list
-    df.drop(df.columns.difference(['line_item_usage_account_id', 'line_item_resource_id', 'line_item_usage_type', 'line_item_operation', 'line_item_usage_amount', 'line_item_unblended_cost', 'line_item_product_code', 'product_from_region_code', 'usage_start_date']), axis=1, inplace=True)
-    
-    # Format: {'old_name': 'new_name'}
-    df = df.rename(columns={'line_item_usage_account_id': 'account_id', 'line_item_resource_id': 'resource_id', 'line_item_usage_type': 'usage_type', 'line_item_operation': 'operation', 'line_item_usage_amount': 'usage_amount', 'line_item_unblended_cost': 'cost', 'line_item_product_code': 'product_name', 'product_from_region_code': 'region', 'usage_start_date': 'usage_start_date'})
     
     #df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
     # 🔥 CRITICAL: Detect time column (ALL POSSIBILITIES)
-    #if "lineItem/UsageStartDate" in df.columns:
-    #    df["usage_start_date"] = df["lineItem/UsageStartDate"]
+    if "lineItem/UsageStartDate" in df.columns:
+        df["usage_start_date"] = df["lineItem/UsageStartDate"]
 
-    #elif "lineItem/UsageStartDateTime" in df.columns:
-    #    df["usage_start_date"] = df["lineItem/UsageEndDate"]
+    elif "lineItem/UsageStartDateTime" in df.columns:
+        df["usage_start_date"] = df["lineItem/UsageEndDate"]
 
-    #elif "identity/TimeInterval" in df.columns:
-    #    df["usage_start_date"] = df["identity/TimeInterval"].astype(str).str.split("/").str[0]
+    elif "identity/TimeInterval" in df.columns:
+        df["usage_start_date"] = df["identity/TimeInterval"].astype(str).str.split("/").str[0]
 
-    #elif "bill/BillingPeriodStartDate" in df.columns:
+    elif "bill/BillingPeriodStartDate" in df.columns:
         # 🔥 fallback (CUR 2.0 minimal export)
-    #    df["usage_start_date"] = df["bill/BillingPeriodStartDate"]
+        df["usage_start_date"] = df["bill/BillingPeriodStartDate"]
 
-    #else:
+    else:
         # 🔥 LAST fallback (prevent crash)
-    #    print("⚠️ No time column found, using current timestamp")
-    #    df["usage_start_date"] = pd.Timestamp.now()
+        print("⚠️ No time column found, using current timestamp")
+        df["usage_start_date"] = pd.Timestamp.now()
     
     #print("Sample data 4:",df.sample(100))
     #print("Columns B:", df.columns.tolist())
     #sys.exit("Execution Terminated.......") # Exits with status 1
     
     # Convert types safely
-    #df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
+    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
 
-    #if "cost" in df.columns:
-    #    df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
-    #else:
-    #    df["cost"] = 0
+    if "cost" in df.columns:
+        df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
+    else:
+        df["cost"] = 0
+        
+    # Drop everything that is NOT in your list
+    df.drop(df.columns.difference(['line_item_usage_account_id', 'line_item_resource_id', 'line_item_usage_type', 'line_item_operation', 'line_item_usage_amount', 'line_item_unblended_cost', 'line_item_product_code', 'product_from_region_code', 'usage_start_date']), axis=1, inplace=True)
+    
+    # Format: {'old_name': 'new_name'}
+    df = df.rename(columns={'line_item_usage_account_id': 'account_id', 'line_item_resource_id': 'resource_id', 'line_item_usage_type': 'usage_type', 'line_item_operation': 'operation', 'line_item_usage_amount': 'usage_amount', 'line_item_unblended_cost': 'cost', 'line_item_product_code': 'product_name', 'product_from_region_code': 'region', 'usage_start_date': 'usage_start_date'})
+
 
     # Ensure required columns exist
     final_cols = [
@@ -91,4 +92,4 @@ def transform_dataframe(df):
     #        df[col] = None
     #print("Sample data 2:",df.sample(50))
     #df = df[final_cols]
-    return df.dropna()
+    return df.dropna(subset=["usage_start_date"])
