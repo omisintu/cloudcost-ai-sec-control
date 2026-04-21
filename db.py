@@ -6,7 +6,7 @@ engine = create_engine(DB_URL, pool_size=10, max_overflow=20)
 
 
 def insert_batch(df, table="cur_data"):
-   try:
+    try:
         df.to_sql(
             table,
             engine,
