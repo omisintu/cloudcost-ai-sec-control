@@ -37,7 +37,7 @@ def run():
         try:
             process_file(key)
         except Exception as e:
-            logging.error(f"Failed {key}: {str(e)}")
+            logging.error(f"Failed in processing file {key}: {str(e)}")
 
 
 if __name__ == "__main__":
