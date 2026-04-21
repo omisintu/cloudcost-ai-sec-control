@@ -8,7 +8,9 @@ engine = create_engine(DB_URL, pool_size=10, max_overflow=20)
 def insert_batch(df, table="cur_data"):
     if "usage_start_date" not in df.columns:
         raise Exception("usage_start_date missing before DB insert")
-
+    
+    df.to_csv('data.csv', index=False)
+    
     try:
         df.to_sql(
             table,

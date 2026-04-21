@@ -31,7 +31,7 @@ def transform_dataframe(df):
     df.columns = [c.strip() for c in df.columns]
 
     # DEBUG (keep this for now)
-    print("Columns:", df.columns.tolist())
+    #print("Columns:", df.columns.tolist())
 
     # Rename known fields
     rename_map = {
