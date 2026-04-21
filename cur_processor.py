@@ -1,6 +1,6 @@
 import pandas as pd
 import io
- 
+import sys
 
 def load_dataframe(s3_obj, key):
     body = s3_obj["Body"].read()
@@ -20,7 +20,7 @@ def transform_dataframe(df):
 
     # DEBUG (keep this for now)
     #print("Columns:", df.columns.tolist())
-    print("Sample data 1:",df.sample(50))
+    #print("Sample data 1:",df.sample(50))
     
     # Rename known fields
     rename_map = {
@@ -54,7 +54,7 @@ def transform_dataframe(df):
         # 🔥 LAST fallback (prevent crash)
         print("⚠️ No time column found, using current timestamp")
         df["usage_start_date"] = pd.Timestamp.now()
-    print("Sample data 2:",df.sample(50))
+    
     # Convert types safely
     #df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
 
@@ -75,11 +75,13 @@ def transform_dataframe(df):
         "region",
         "usage_start_date"
     ]
-
+    print("Columns A:", df.columns.tolist())
     for col in final_cols:
         if col not in df.columns:
             df[col] = None
-
+    print("Sample data 2:",df.sample(50))
     df = df[final_cols]
     print("Sample data 3:",df.sample(50))
+    print("Columns B:", df.columns.tolist())
+    sys.exit("Execution Terminated.......") # Exits with status 1
     return df.dropna(subset=["usage_start_date"])
