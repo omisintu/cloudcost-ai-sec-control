@@ -76,7 +76,7 @@ def transform_dataframe(df):
     
     print("Sample data 4:",df.sample(50))
     print("Columns B:", df.columns.tolist())
-    #sys.exit("Execution Terminated.......") # Exits with status 1
+    sys.exit("Execution Terminated.......") # Exits with status 1
 
     # Ensure required columns exist
     final_cols = [
