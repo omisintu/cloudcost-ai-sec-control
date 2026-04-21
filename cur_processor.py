@@ -10,7 +10,7 @@ REQUIRED_COLUMNS = [
     "lineItem/UnblendedCost",
     "product/ProductName",
     "product/region",
-    "lineItem/UsageStart"
+    "lineItem/usage_start"
 ]
 
 
@@ -38,7 +38,7 @@ def transform_dataframe(df):
         "lineItem/UnblendedCost": "cost",
         "product/ProductName": "product_name",
         "product/region": "region",
-        "lineItem/UsageStart": "usage_start"
+        "lineItem/usage_start": "usage_start"
     })
 
     df["usage_start"] = pd.to_datetime(df["usage_start"], errors="coerce")
