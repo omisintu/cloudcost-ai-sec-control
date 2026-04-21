@@ -16,9 +16,9 @@ def process_file(key):
         logging.warning(f"Empty file: {key}")
         return
     
-    
-    df = transform_dataframe(df)
     print(df.columns.tolist())
+    df = transform_dataframe(df)
+    
     if df.empty:
         logging.warning(f"No valid data after transform: {key}")
         return

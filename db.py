@@ -16,6 +16,6 @@ def insert_batch(df, table="cur_data"):
             chunksize=5000
         )
     except Exception as e:
-            logging.error(f"Unable to insert data: {str(e)}")
+        logging.error(f"Unable to insert data: {str(e)}")
             
     
