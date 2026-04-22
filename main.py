@@ -2,7 +2,7 @@ import logging
 from s3_client import list_cur_files, get_s3_object
 from cur_processor import load_dataframe, transform_dataframe
 from db import insert_batch, get_processed_files, mark_file_processed
-
+from datetime import timezone
 logging.basicConfig(level=logging.INFO)
 
 def run():
@@ -17,8 +17,17 @@ def run():
         key = file["key"]
         last_modified = file["last_modified"]
         
+        #Normalize S3 timestamp to UTC (already aware, but safe)
+        if last_modified.tzinfo is None:
+            last_modified = last_modified.replace(tzinfo=timezone.utc)
+        
         #SKIP if already processed and unchanged
-        if key in processed_files and processed_files[key] >= last_modified:
+        #if key in processed_files and processed_files[key] >= last_modified:
+        #    logging.info(f"Skipping already processed file: {key}")
+        #    continue
+        stored_time = processed_files.get(key)
+
+        if stored_time and stored_time >= last_modified:
             logging.info(f"Skipping already processed file: {key}")
             continue
         

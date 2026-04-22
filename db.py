@@ -1,7 +1,7 @@
 import logging
 from sqlalchemy import create_engine, text
 from config import DB_URL
-
+from datetime import timezone
 engine = create_engine(DB_URL)
 
 
@@ -56,12 +56,25 @@ def insert_batch(df, table="cur_data"):
     except Exception as e:
         logging.error(f"Unable to insert data: {str(e)}")
         raise
+    
 def get_processed_files():
     query = text("SELECT file_key, last_modified FROM processed_files")
+
     with engine.connect() as conn:
         result = conn.execute(query).fetchall()
 
-    return {row[0]: row[1] for row in result}
+    processed = {}
+
+    for row in result:
+        lm = row[1]
+
+        #Convert DB timestamp to UTC-aware
+        if lm is not None:
+            lm = lm.replace(tzinfo=timezone.utc)
+
+        processed[row[0]] = lm
+
+    return processed
 
 
 def mark_file_processed(file_key, last_modified):
