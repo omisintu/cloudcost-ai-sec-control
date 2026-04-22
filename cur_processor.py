@@ -90,6 +90,11 @@ def transform_dataframe(df):
         "region",
         "usage_start_date"
     ]
+    df = df.fillna({
+        "resource_id": "unknown",
+        "usage_type": "unknown",
+        "operation": "unknown"
+    })
     #print("Columns A:", df.columns.tolist())
     #for col in final_cols:
     #    if col not in df.columns:

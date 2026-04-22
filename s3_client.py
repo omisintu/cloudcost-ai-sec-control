@@ -18,10 +18,12 @@ def list_cur_files():
         for obj in page.get("Contents", []):
             key = obj["Key"]
             if key.endswith(".parquet") or key.endswith(".csv"):
-                files.append(key)
+                files.append({
+                    "key": key,
+                    "last_modified": obj["LastModified"]
+                })
 
     return files
-
 
 @retry(stop=stop_after_attempt(5), wait=wait_exponential(multiplier=2))
 def get_s3_object(key):
