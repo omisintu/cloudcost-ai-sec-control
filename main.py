@@ -22,9 +22,6 @@ def run():
             last_modified = last_modified.replace(tzinfo=timezone.utc)
         
         #SKIP if already processed and unchanged
-        #if key in processed_files and processed_files[key] >= last_modified:
-        #    logging.info(f"Skipping already processed file: {key}")
-        #    continue
         stored_time = processed_files.get(key)
 
         if stored_time and stored_time >= last_modified:

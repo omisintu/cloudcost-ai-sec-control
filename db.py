@@ -6,8 +6,6 @@ engine = create_engine(DB_URL)
 
 
 def insert_batch(df, table="cur_data"):
-    #if "usage_start_date" not in df.columns:
-    #    raise Exception("usage_start_date missing before DB insert")
     
     #df.to_csv('data.csv', index=False)# DEBUG: Save to CSV before insert to inspect data
     records = df.to_dict(orient="records")
@@ -44,15 +42,6 @@ def insert_batch(df, table="cur_data"):
         with engine.begin() as conn:
             conn.execute(query, records)
         
-
-        #df.to_sql(
-        #    table,
-        #    engine,
-        #    if_exists="append",
-        #    index=True,
-        #    method="multi",
-        #    chunksize=7000
-        #)
     except Exception as e:
         logging.error(f"Unable to insert data: {str(e)}")
         raise
