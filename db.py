@@ -22,7 +22,8 @@ def insert_batch(df, table="cur_data"):
                 cost,
                 product_name,
                 region,
-                usage_start_date
+                usage_start_date,
+                row_hash
             )
             VALUES (
                 :account_id,
@@ -33,9 +34,10 @@ def insert_batch(df, table="cur_data"):
                 :cost,
                 :product_name,
                 :region,
-                :usage_start_date
+                :usage_start_date,
+                :row_hash
             )
-            ON CONFLICT (resource_id, usage_start_date, usage_type, operation)
+            ON CONFLICT (account_id, resource_id, usage_type, operation, usage_start_date, row_hash)
             DO NOTHING
         """)
 

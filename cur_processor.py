@@ -1,6 +1,11 @@
 import pandas as pd
 import io
 import sys
+import hashlib
+
+def generate_row_hash(row):
+    key = f"{row.get('account_id','')}-{row.get('resource_id','')}-{row.get('usage_type','')}-{row.get('operation','')}-{row.get('usage_start','')}-{row.get('cost','')}"
+    return hashlib.sha256(key.encode()).hexdigest()
 
 def load_dataframe(s3_obj, key):
     body = s3_obj["Body"].read()
@@ -13,7 +18,6 @@ def load_dataframe(s3_obj, key):
     return df
 
 def transform_dataframe(df):
-    import pandas as pd
 
     # Normalize column names
     df.columns = [c.strip() for c in df.columns]
@@ -37,33 +41,33 @@ def transform_dataframe(df):
     #df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
     # 🔥 CRITICAL: Detect time column (ALL POSSIBILITIES)
-    if "lineItem/UsageStartDate" in df.columns:
-        df["usage_start_date"] = df["lineItem/UsageStartDate"]
+    #if "lineItem/UsageStartDate" in df.columns:
+    #    df["usage_start_date"] = df["lineItem/UsageStartDate"]
 
-    elif "lineItem/UsageStartDateTime" in df.columns:
-        df["usage_start_date"] = df["lineItem/UsageEndDate"]
+    #elif "lineItem/UsageStartDateTime" in df.columns:
+    #    df["usage_start_date"] = df["lineItem/UsageEndDate"]
 
-    elif "identity/TimeInterval" in df.columns:
-        df["usage_start_date"] = df["identity/TimeInterval"].astype(str).str.split("/").str[0]
+    #elif "identity/TimeInterval" in df.columns:
+    #    df["usage_start_date"] = df["identity/TimeInterval"].astype(str).str.split("/").str[0]
 
-    elif "bill/BillingPeriodStartDate" in df.columns:
+    #elif "bill/BillingPeriodStartDate" in df.columns:
         # 🔥 fallback (CUR 2.0 minimal export)
-        df["usage_start_date"] = df["bill/BillingPeriodStartDate"]
+    #    df["usage_start_date"] = df["bill/BillingPeriodStartDate"]
 
-    else:
+    #else:
         # 🔥 LAST fallback (prevent crash)
-        print("⚠️ No time column found, using current timestamp")
-        df["usage_start_date"] = pd.Timestamp.now()
+    #    print("⚠️ No time column found, using current timestamp")
+    #    df["usage_start_date"] = pd.Timestamp.now()
     
     
     
     # Convert types safely
-    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
+    #df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
 
-    if "cost" in df.columns:
-        df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
-    else:
-        df["cost"] = 0
+    #if "cost" in df.columns:
+    #    df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
+    #else:
+    #    df["cost"] = 0
         
     # Drop everything that is NOT in your list
     df.drop(df.columns.difference(['line_item_usage_account_id', 'line_item_resource_id', 'line_item_usage_type', 'line_item_operation', 'line_item_usage_amount', 'line_item_unblended_cost', 'line_item_product_code', 'product_from_region_code', 'usage_start_date']), axis=1, inplace=True)
@@ -90,15 +94,26 @@ def transform_dataframe(df):
         "region",
         "usage_start_date"
     ]
-    df = df.fillna({
-        "resource_id": "unknown",
-        "usage_type": "unknown",
-        "operation": "unknown"
-    })
+    #df = df.fillna({
+    #    "resource_id": "unknown",
+    #    "usage_type": "unknown",
+    #    "operation": "unknown"
+    #})
     #print("Columns A:", df.columns.tolist())
     #for col in final_cols:
     #    if col not in df.columns:
     #        df[col] = None
     #print("Sample data 2:",df.sample(50))
     #df = df[final_cols]
-    return df
+    #return df
+    # FIX: Replace nulls with stable placeholders
+    df["resource_id"] = df["resource_id"].fillna("no_resource")
+    df["operation"] = df["operation"].fillna("no_operation")
+
+    # Generate row hash
+    df["row_hash"] = df.apply(generate_row_hash, axis=1)
+
+    df["usage_start_date"] = pd.to_datetime(df["usage_start_date"], errors="coerce")
+    df["cost"] = pd.to_numeric(df["cost"], errors="coerce").fillna(0)
+
+    return df.dropna(subset=["usage_start_date"])
