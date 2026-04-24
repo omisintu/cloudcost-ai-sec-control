@@ -5,12 +5,16 @@ import logging
 import hashlib
 from sqlalchemy import text
 from db import engine
-
+import time
 load_dotenv()
 
-encryptedKey = "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"
+encryptedKey = "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"
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+def enhance_with_ai(title, description, impact):
+    time.sleep(1.2)  # prevent rate burst
 
 
 def enhance_with_ai(title, description, impact):
@@ -50,10 +54,14 @@ def enhance_with_ai(title, description, impact):
             )
 
             airesponseText = response.choices[0].message.content.strip()
-
+            
         except Exception as e:
-            logging.error(f"AI enhancement failed: {e}")
-            airesponseText = f"{title}. {description} {impact}"  # fallback
+            if "insufficient_quota" in str(e):
+                logging.warning("Quota exceeded, skipping AI enhancement")
+            else:
+                logging.error(f"AI failed: {e}")
+
+            airesponseText = f"{title}. {description} {impact}"
     
         raw_input = f"{title}-{description}-{impact}"
         key = hashlib.sha256(raw_input.encode()).hexdigest()

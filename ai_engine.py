@@ -99,14 +99,18 @@ def run_ai_insights():
     all_insights += generate_savings_insights()
     all_insights += generate_cost_driver_insights()
 
+    MAX_AI_CALLS = 3
     enhanced_insights = []
 
-    for insight in all_insights:
-        polished = enhance_with_ai(
-            insight["title"],
-            insight["description"],
-            insight["impact"]
-        )
+    for i, insight in enumerate(all_insights):
+        if i < MAX_AI_CALLS:
+            polished = enhance_with_ai(
+                insight["title"],
+                insight["description"],
+                insight["impact"]
+            )
+        else:
+            polished = f"{insight['title']}. {insight['description']} {insight['impact']}"
 
         enhanced_insights.append({
             "type": insight["type"],
