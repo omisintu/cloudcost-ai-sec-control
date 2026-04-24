@@ -4,6 +4,7 @@ from cur_processor import load_dataframe, transform_dataframe
 from db import insert_batch, get_processed_files, mark_file_processed
 from datetime import timezone
 from aggregator import run_all_aggregations
+from drivers import run_driver_engine
 logging.basicConfig(level=logging.INFO)
 
 def run():
@@ -53,6 +54,9 @@ def run():
 
             #perform aggregations
             run_all_aggregations()
+
+            #updating drivers
+            run_driver_engine()
             
         except Exception as e:
             logging.error(f"Failed in processing file {key}: {str(e)}")

@@ -46,3 +46,43 @@ def get_top_resources():
         result = conn.execute(query).fetchall()
 
     return [dict(row._mapping) for row in result]
+
+@app.get("/drivers/services")
+def top_services():
+    query = text("""
+        SELECT * FROM top_service_drivers
+        ORDER BY total_cost DESC
+        LIMIT 10
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]
+
+@app.get("/drivers/resources")
+def top_resources():
+    query = text("""
+        SELECT * FROM top_resource_drivers
+        ORDER BY total_cost DESC
+        LIMIT 10
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]
+
+@app.get("/drivers/trends")
+def cost_trends():
+    query = text("""
+        SELECT * FROM cost_trends
+        WHERE growth_percentage > 20
+        ORDER BY growth_percentage DESC
+        LIMIT 10
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]

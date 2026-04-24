@@ -33,3 +33,19 @@ CREATE TABLE IF NOT EXISTS resource_cost (
     total_cost DOUBLE PRECISION,
     PRIMARY KEY (resource_id)
 );
+CREATE TABLE IF NOT EXISTS top_service_drivers (
+    service TEXT PRIMARY KEY,
+    total_cost DOUBLE PRECISION,
+    percentage DOUBLE PRECISION
+);
+CREATE TABLE IF NOT EXISTS top_resource_drivers (
+    resource_id TEXT PRIMARY KEY,
+    total_cost DOUBLE PRECISION
+);
+CREATE TABLE IF NOT EXISTS cost_trends (
+    service TEXT,
+    current_cost DOUBLE PRECISION,
+    previous_cost DOUBLE PRECISION,
+    growth_percentage DOUBLE PRECISION,
+    PRIMARY KEY (service)
+);
