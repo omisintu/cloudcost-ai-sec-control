@@ -68,3 +68,8 @@ CREATE TABLE IF NOT EXISTS ai_insights (
     impact TEXT,
     created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS ai_cache (
+    input_hash TEXT PRIMARY KEY,
+    output TEXT
+);

@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from db import engine
 import logging
-
+from ai_utils import enhance_with_ai
 def generate_cost_spike_insights():
     query = text("""
         SELECT service, growth_percentage, current_cost
@@ -92,7 +92,6 @@ def store_insights(insights):
     with engine.begin() as conn:
         conn.execute(insert_query, insights)
 
-
 def run_ai_insights():
     all_insights = []
 
@@ -100,7 +99,35 @@ def run_ai_insights():
     all_insights += generate_savings_insights()
     all_insights += generate_cost_driver_insights()
 
-    if all_insights:
-        store_insights(all_insights)
+    enhanced_insights = []
 
-    logging.info("AI insights generated")
+    for insight in all_insights:
+        polished = enhance_with_ai(
+            insight["title"],
+            insight["description"],
+            insight["impact"]
+        )
+
+        enhanced_insights.append({
+            "type": insight["type"],
+            "title": insight["title"],
+            "description": polished,
+            "impact": insight["impact"]
+        })
+
+    if enhanced_insights:
+        store_insights(enhanced_insights)
+        logging.info("AI insights generated")
+
+
+#def run_ai_insights():
+#    all_insights = []
+
+#    all_insights += generate_cost_spike_insights()
+#    all_insights += generate_savings_insights()
+#    all_insights += generate_cost_driver_insights()
+
+#    if all_insights:
+        #store_insights(all_insights)
+
+#    logging.info("AI insights generated")
