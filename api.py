@@ -121,3 +121,16 @@ def savings_summary():
         result = conn.execute(query).fetchone()
 
     return dict(result._mapping)
+
+@app.get("/ai/insights")
+def get_ai_insights():
+    query = text("""
+        SELECT * FROM ai_insights
+        ORDER BY created_at DESC
+        LIMIT 20
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]

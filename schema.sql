@@ -60,3 +60,11 @@ CREATE TABLE IF NOT EXISTS optimization_recommendations (
     created_at TIMESTAMP DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS ai_insights (
+    id SERIAL PRIMARY KEY,
+    insight_type TEXT,
+    title TEXT,
+    description TEXT,
+    impact TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
