@@ -3,6 +3,7 @@ from s3_client import list_cur_files, get_s3_object
 from cur_processor import load_dataframe, transform_dataframe
 from db import insert_batch, get_processed_files, mark_file_processed
 from datetime import timezone
+from aggregator import run_all_aggregations
 logging.basicConfig(level=logging.INFO)
 
 def run():
@@ -49,6 +50,9 @@ def run():
             #Mark as processed ONLY after success
             mark_file_processed(key, last_modified)
             logging.info(f"Data Processing Completed: {key}")
+
+            #perform aggregations
+            run_all_aggregations()
             
         except Exception as e:
             logging.error(f"Failed in processing file {key}: {str(e)}")
