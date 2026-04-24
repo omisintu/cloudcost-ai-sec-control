@@ -54,9 +54,11 @@ def run():
 
             #perform aggregations
             run_all_aggregations()
+            logging.info(f"Data Aggregation Completed: {key}")
 
             #updating drivers
             run_driver_engine()
+            logging.info(f"Data cost drivers Completed: {key}")
             
         except Exception as e:
             logging.error(f"Failed in processing file {key}: {str(e)}")
