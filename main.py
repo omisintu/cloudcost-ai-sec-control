@@ -5,6 +5,7 @@ from db import insert_batch, get_processed_files, mark_file_processed
 from datetime import timezone
 from aggregator import run_all_aggregations
 from drivers import run_driver_engine
+from optimizer import run_optimization_engine
 logging.basicConfig(level=logging.INFO)
 
 def run():
@@ -59,6 +60,10 @@ def run():
             #updating drivers
             run_driver_engine()
             logging.info(f"Data cost drivers Completed: {key}")
+
+            #running optimizer
+            run_optimization_engine()
+            logging.info(f"Data optimizer enginer Completed: {key}")
             
         except Exception as e:
             logging.error(f"Failed in processing file {key}: {str(e)}")

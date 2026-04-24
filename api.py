@@ -86,3 +86,38 @@ def cost_trends():
         result = conn.execute(query).fetchall()
 
     return [dict(row._mapping) for row in result]
+
+
+@app.get("/optimization/recommendations")
+def get_recommendations():
+    query = text("""
+        SELECT 
+            resource_id,
+            service,
+            issue_type,
+            current_cost,
+            potential_savings,
+            recommendation
+        FROM optimization_recommendations
+        ORDER BY potential_savings DESC
+        LIMIT 20
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]
+
+@app.get("/optimization/savings-summary")
+def savings_summary():
+    query = text("""
+        SELECT 
+            SUM(current_cost) as total_cost,
+            SUM(potential_savings) as total_savings
+        FROM optimization_recommendations
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchone()
+
+    return dict(result._mapping)

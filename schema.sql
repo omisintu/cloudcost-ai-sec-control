@@ -49,3 +49,14 @@ CREATE TABLE IF NOT EXISTS cost_trends (
     growth_percentage DOUBLE PRECISION,
     PRIMARY KEY (service)
 );
+CREATE TABLE IF NOT EXISTS optimization_recommendations (
+    id SERIAL PRIMARY KEY,
+    resource_id TEXT,
+    service TEXT,
+    issue_type TEXT,
+    current_cost DOUBLE PRECISION,
+    potential_savings DOUBLE PRECISION,
+    recommendation TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
