@@ -103,13 +103,13 @@ def run_ai_insights():
     enhanced_insights = []
 
     for i, insight in enumerate(all_insights):
-        if i < MAX_AI_CALLS:
-            polished = enhance_with_ai(
-                insight["title"],
-                insight["description"],
-                insight["impact"]
-            )
-        else:
+        #if i < MAX_AI_CALLS:
+        #    polished = enhance_with_ai(
+        #        insight["title"],
+        #        insight["description"],
+        #        insight["impact"]
+        #    )
+        #else:
             polished = f"{insight['title']}. {insight['description']} {insight['impact']}"
 
         enhanced_insights.append({
