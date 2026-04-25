@@ -8,16 +8,13 @@ from db import engine
 import time
 load_dotenv()
 
-encryptedKey = "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"
+encryptedKey = "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"
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-
-def enhance_with_ai(title, description, impact):
-    time.sleep(1.2)  # prevent rate burst
+client = OpenAI(api_key=encryptedKey)#os.getenv("OPENAI_API_KEY"))
 
 
 def enhance_with_ai(title, description, impact):
+        time.sleep(1.2)  # prevent rate burst
         """
         Existing code : Convert structured insight into polished human-readable explanation.
         """
