@@ -7,6 +7,7 @@ from aggregator import run_all_aggregations
 from drivers import run_driver_engine
 from optimizer import run_optimization_engine
 from ai_engine import run_ai_insights
+from fix_engine import run_fix_engine
 logging.basicConfig(level=logging.INFO)
 
 def run():
@@ -69,6 +70,10 @@ def run():
             #ai_insights
             run_ai_insights()
             logging.info(f"Data ai_insights Completed: {key}")
+
+            #Run Autofix engine command/TF scripts
+            run_fix_engine()
+            logging.info(f"Data Run Autofix engine Completed: {key}")
             
         except Exception as e:
             logging.error(f"Failed in processing file {key}: {str(e)}")

@@ -134,3 +134,16 @@ def get_ai_insights():
         result = conn.execute(query).fetchall()
 
     return [dict(row._mapping) for row in result]
+
+@app.get("/auto-fix/actions")
+def get_fix_actions():
+    query = text("""
+        SELECT * FROM auto_fix_actions
+        ORDER BY created_at DESC
+        LIMIT 20
+    """)
+
+    with engine.connect() as conn:
+        result = conn.execute(query).fetchall()
+
+    return [dict(row._mapping) for row in result]

@@ -110,7 +110,7 @@ def run_ai_insights():
         #        insight["impact"]
         #    )
         #else:
-            polished = f"{insight['title']}. {insight['description']} {insight['impact']}"
+        polished = f"{insight['title']}. {insight['description']} {insight['impact']}"
 
         enhanced_insights.append({
             "type": insight["type"],

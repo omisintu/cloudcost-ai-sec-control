@@ -73,3 +73,19 @@ CREATE TABLE IF NOT EXISTS ai_cache (
     input_hash TEXT PRIMARY KEY,
     output TEXT
 );
+CREATE TABLE IF NOT EXISTS auto_fix_actions (
+    id SERIAL PRIMARY KEY,
+    service TEXT,
+    resource_id TEXT,
+    action_type TEXT,
+    cli_command TEXT,
+    terraform_code TEXT,
+    risk_level TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE UNIQUE INDEX fix_unique_idx
+ON auto_fix_actions (resource_id, action_type);
+ALTER TABLE auto_fix_actions ADD COLUMN approved BOOLEAN DEFAULT FALSE;
+ALTER TABLE auto_fix_actions ADD COLUMN status TEXT DEFAULT 'PENDING';
+ALTER TABLE optimization_recommendations ADD COLUMN current_instance_type TEXT;
